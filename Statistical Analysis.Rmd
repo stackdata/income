@@ -1,0 +1,25 @@
+---
+title: "Statistical Analysis"
+author: "Anthony Stachowitz"
+date: "July 11, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Census data set wrangled
+
+This is subset of the Census data that I am going to be using in my logistic regression model.
+
+I have represented each variable in a barplot to visually examine the data.
+
+
+```{r}
+library(readr)
+income_data_w <- read_csv("C:/Users/Anthony/Desktop/R studio projects/income/income_data_w.csv")
+barplot(table(income_data_w$MaritalStatus), main="Marital Status")
+barplot(table(income_data_w$Education), main="Education Level")
+barplot(table(income_data_w$WorkClass), main="Working Class")
+barplot(table(income_data_w$Occupation), main="Occupation")

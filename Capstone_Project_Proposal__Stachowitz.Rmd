@@ -33,7 +33,7 @@ I am looking at this information in an attempt to find relevance in different ac
 
 #### Data
 
-The data can be found in the GitHub repository at https://github.com/stackdata/insurance.  It's in an easily downloadable xls format.
+The data can be found in the GitHub repository at https://github.com/stackdata/income.  It's in an easily downloadable xls format.
 
 
 #### Outline of Approach
