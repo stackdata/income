@@ -1,0 +1,79 @@
+---
+title: "Data Story"
+author: "Anthony Stachowitz"
+date: "July 13, 2018"
+geometry: margin=1cm
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readxl)
+income_data_f <- read_excel("C:/Users/Anthony/Desktop/R studio projects/income/income_data_f.xlsx")
+income_data_f <- income_data_f[, -c(5)]
+```
+
+<style>
+body {
+text-align: justify}
+</style>
+
+
+## Data Story
+
+### Introduction
+
+There is a lot of conversation about the future of jobs in this country. People are worried about innovation and if it’s going to take away jobs. Will self-driving trucks take away good blue-collar jobs? Are algorithms going to take over the financial sector? Should everyone major in robotics, so they can fix all the robots that are surely going to be doing all the factory jobs? 
+
+These are conversations that we are going to have to have as technology changes the employment landscape, But, are there things we can do to prepare for the future that has nothing to do with advances in tech? Are the generalities we can make about out type of employment and industry without worrying about specific jobs? Are there basic life decisions that influence how our future will unfolds? Is there advice we can give our children that will, if followed, give them an advantage?
+
+I have analyzed a data set from extracted from the census bureau by Data Mining and Visualization Silicon Valley (via the UCI machine learning repository) to help answer some of these questions. The data includes two sets. The training set 32,561 instances of data and the testing set includes 16,281 instances of date. I removed some variables to condense it to five categorical variables, four of the variables were used to predict the fifth variable. 
+
+The variable I am predicting is whether you are going to make more $50,000 a year. The categorical variables that I am using are type of employment, industry, marital status, and education level completed. 
+Although you would assume going to school will help your chances, what is the best education level? Does your marital status have any effect on your income level, or is it more important then what industry you pick? Do you have a better chance to earn a living by owning your own business or should you try to get a government job… and what government, federal, state, local?  These are some questions I will answer in capstone project.
+
+
+
+### Data set
+
+
+#### Fields 
+
+
+```{r}
+str(income_data_f)
+```
+
+
+#### Limitations
+
+
+The limitations of this data set, in my opinion, include the year the data was taken from and the amount that was used for the monetary split point of $50,000.
+
+The data was from 1994 which is over 20 years ago. In my opinion factors such as Marital Status and Occupation have had major changes over the period. For example, gay marriage was not legal or officially counted back in 1994, and just social attitudes towards relationships have changed. With the massive growth of the tech industry and the internet, there have obviously also been major changes in the type of occupations there are in the tech sector. For instance, there was no such thing as a Data Scientist in 1994… at least not officially.
+
+The amount of $50,000 as spilt point is a little low in 2018. I believe a split of $75,000 would have been better as a point that represents the separation of the middle class in America.  This data is also being used to represent a possible future outcome. A $50,000 per year salary in 10 to 20 years will probably not represent an amount much over the poverty rate in some parts of the United States. 
+
+
+
+#### Cleaning and wrangling
+
+The data I used comes from the 1994 census bureau by way of Data Mining and Visualization Silicon Graphics. It was 48,842 instances split into a training set of 32,561 instances and a testing set of 16,281 instances. I further decreased the number by removing variables that I was not using and removing rows that was missing data in one or more of the variables. The factors are WorkingClass, Education, MaritalStatus, and Occupation.
+The variables I am using for working class are “Federal-gov”, “Local-gov”, “Never-worked”, “Private”, “Self-emp-inc”, “Self-emp-not-ing”, “State-gov”, “Without-pay”. 
+
+The variables I am using for Education are "10th", "11th", "12th", "1st-4th", "5th-6th", "7th-8th", "9th", "Assoc-acdm”, "Assoc-voc", "Bachelors", "Doctorate", "HS-grad", "Masters", "Preschool", "Prof-school", "Some-college".
+
+The variables I am using for Marital Status are "Divorced", "Married-AF-spouse", "Married-civ-spouse", "Married-spouse-absent", "Never-married", "Separated", "Widowed".
+
+The variables I am using for Occupation are "Adm-clerical", "Armed-Forces", "Craft-repair", "Exec-managerial", "Farming-fishing", "Handlers-cleaners", "Machine-op-inspct", "Other-service", "Priv-house-serv", "Prof-specialty", "Protective-serv", "Sales", "Tech-support", "Transport-moving".
+
+I added an extra column to represent a person with an income over $50,000 with a 0, and an income under $50,000 with a 1.
+
+### Preliminary Logistical Regression formula
+
+```{r}
+model <- glm(LessThen_50 ~ WorkClass + Education + MaritalStatus + Occupation,family=binomial(link='logit'),data=income_data_f)
+summary(model)
+```
+
+
