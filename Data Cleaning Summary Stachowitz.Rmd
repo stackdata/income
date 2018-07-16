@@ -7,7 +7,7 @@ output:
   pdf_document: default
 ---
 
-```{r setup, include=FALSE}
+```{r setup}
 knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(readxl)
@@ -50,13 +50,144 @@ income_data$MaritalStatus <- as.factor(income_data$MaritalStatus)
 Remove columns to make the easier to work with.
 
 ```{r}
-income_data <- income_data[, -c(1, 3, 5, 8:14)]
+income_data <- income_data[, -c(1, 3, 5, 8:15)]
 income_data
 ```
 
-### 6. Check for NA's in the data
+
+
+### 6. turn missing values into NA's
+
+```{r}
+income_data[ income_data == "?" ] <- NA
+```
+
+### 7. Re-check for NA's
 
 ```{r}
 sapply(income_data,function(x) sum(is.na(x)))
 ```
 
+### 8. Remove rows of data that had NA's
+
+```{r}
+income_data <- income_data[complete.cases(income_data), ]
+```
+
+### 9. Recheck and data structure
+
+```{r}
+sapply(income_data,function(x) sum(is.na(x)))
+str(income_data)
+```
+
+
+
+
+```{r}
+library("RColorBrewer")
+library("ggplot2")
+
+ed_graph <- income_data %>% 
+  group_by(Education) %>% 
+  summarize(education_count = n()) %>% 
+  arrange(desc(education_count))
+
+ed_graph$Education <- factor(ed_graph$Education, levels = ed_graph$Education[order(ed_graph$Education)])
+colourCount = length(unique(ed_graph$Education))
+fill_various <- colorRampPalette(brewer.pal(8, "Dark2"))
+
+ed_graph %>% 
+  filter(Education != "NA") %>% 
+  ggplot(aes(x = Education, y = education_count, fill = Education)) + 
+  geom_bar(stat = "identity") + 
+  coord_flip() +
+  geom_text(aes(label = education_count), size = 3, color = "black", hjust = -0.1) + 
+  labs(x = "Education Level", y = "Number of People", title = "Education Level sample of the Census") + 
+  theme(legend.position = "none", plot.title = element_text(hjust = 0.5)) + 
+  ylim(0, max(ed_graph$education_count + 100)) + 
+  scale_fill_manual(values = fill_various(colourCount))
+
+```
+
+
+
+```{r}
+
+work_graph <- income_data %>% 
+  group_by(WorkClass) %>% 
+  summarize(work_count = n()) %>% 
+  arrange(desc(work_count))
+
+work_graph$WorkClass <- factor(work_graph$WorkClass, levels = work_graph$WorkClass[order(work_graph$WorkClass)])
+colourCount = length(unique(work_graph$WorkClass))
+fill_various <- colorRampPalette(brewer.pal(8, "Dark2"))
+
+work_graph %>% 
+  filter(WorkClass != "NA") %>% 
+  ggplot(aes(x = WorkClass, y = work_count, fill = WorkClass, width = .4)) + 
+  geom_bar(stat = "identity") + 
+  geom_text(aes(label = work_count), size = 3, color = "black", hjust = 0.5, vjust = -0.7) + 
+  labs(x = "Class of Work", y = "Number of People", title = "Class of Work Level sample of the Census") + 
+  theme(legend.position = "none", plot.title = element_text(hjust = .5)) + 
+  ylim(0, max(work_graph$work_count + 100)) + 
+  scale_fill_manual(values = fill_various(colourCount))
+
+
+
+```
+
+
+
+```{r}
+
+marital_graph <- income_data %>% 
+  group_by(MaritalStatus) %>% 
+  summarize(marital_count = n()) %>% 
+  arrange(desc(marital_count))
+
+marital_graph$MaritalStatus <- factor(marital_graph$MaritalStatus, levels = marital_graph$MaritalStatus[order(marital_graph$MaritalStatus)])
+colourCount = length(unique(marital_graph$MaritalStatus))
+fill_various <- colorRampPalette(brewer.pal(8, "Dark2"))
+
+marital_graph %>% 
+  filter(MaritalStatus != "NA") %>% 
+  ggplot(aes(x = MaritalStatus, y = marital_count, fill = MaritalStatus, width = .4)) + 
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  geom_text(aes(label = marital_count), size = 3, color = "black", hjust = 0, vjust = -1.8) + 
+  labs(x = "Marital Status", y = "Number of People", title = "Marital Status Level sample of the Census") + 
+  theme(legend.position = "none", plot.title = element_text(hjust = .5)) + 
+  ylim(0, max(marital_graph$marital_count + 100)) + 
+  scale_fill_manual(values = fill_various(colourCount))
+
+
+```
+
+
+
+```{r}
+
+Occup_graph <- income_data %>% 
+  group_by(Occupation) %>% 
+  summarize(Occupation_count = n()) %>% 
+  arrange(desc(Occupation_count))
+
+Occup_graph$Occupation <- factor(Occup_graph$Occupation, levels = Occup_graph$Occupation[order(Occup_graph$Occupation)])
+colourCount = length(unique(Occup_graph$Occupation))
+fill_various <- colorRampPalette(brewer.pal(8, "Dark2"))
+
+Occup_graph %>% 
+  filter(Occupation != "NA") %>% 
+  ggplot(aes(x = Occupation, y = Occupation_count, fill = Occupation)) + 
+  geom_bar(stat = "identity") + 
+  coord_flip() +
+  geom_text(aes(label = Occupation_count), size = 3, color = "black", hjust = -0.1) + 
+  labs(x = "Occupation Level", y = "Number of People", title = "Occupation Level sample of the Census") + 
+  theme(legend.position = "none", plot.title = element_text(hjust = 0.5)) + 
+  ylim(0, max(Occup_graph$Occupation_count + 100)) + 
+  scale_fill_manual(values = fill_various(colourCount))
+
+
+
+```
